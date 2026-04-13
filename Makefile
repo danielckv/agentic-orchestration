@@ -1,4 +1,4 @@
-.PHONY: all build test test-go test-python lint lint-go lint-python init run clean
+.PHONY: all build test test-go test-python lint lint-go lint-python init run clean docs docs-serve docs-deploy
 
 WORKSPACE ?= $(HOME)/caof-workspace
 GOAL ?= "Default goal"
@@ -14,7 +14,7 @@ test-go:                  ## Run Go tests
 	go test ./... -v -count=1
 
 test-python:              ## Run Python tests
-	cd agents && python -m pytest tests/ -v
+	cd agents && python3 -m pytest tests/ -v
 
 lint: lint-go lint-python  ## Lint all code
 
@@ -32,3 +32,15 @@ run: init                 ## Submit a goal and start execution
 
 clean:                    ## Tear down sessions and worktrees
 	./bin/caof teardown --force
+
+docs:                     ## Build MkDocs documentation to site/
+	mkdocs build --strict
+
+docs-serve:               ## Serve docs locally with live reload
+	mkdocs serve
+
+docs-deploy:              ## Deploy docs to GitHub Pages
+	mkdocs gh-deploy --force
+
+help:                     ## Show this help
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
