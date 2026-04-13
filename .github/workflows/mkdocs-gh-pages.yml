@@ -30,13 +30,8 @@ jobs:
         uses: actions/checkout@v4
       - name: Setup Pages
         uses: actions/configure-pages@v5
-      - name: MkDocs Deploy
-        uses: yodamad-actions/mkdocs@1.0.1
-        with:
-          # Directory containing the static site output (relative to repo root)
-          output-dir: # default is public
-          # Working directory for mkdocs
-          workdir: ./mkdocs.yml
+      - name: Deploy MkDocs
+        uses: mhausenblas/mkdocs-deploy-gh-pages@1.26
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
 
