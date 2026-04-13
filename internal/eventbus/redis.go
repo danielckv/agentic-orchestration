@@ -10,7 +10,7 @@ import (
 )
 
 type EventBus interface {
-	Publish(ctx context.Context, stream string, msg interface{}) (string, error)
+	Publish(ctx context.Context, stream string, msg any) (string, error)
 	Subscribe(ctx context.Context, stream, group, consumer string, handler func(id string, data map[string]string) error) error
 	Close() error
 }
@@ -36,7 +36,7 @@ func NewRedisEventBus(addr, password string, db int) (*RedisEventBus, error) {
 	return &RedisEventBus{client: client}, nil
 }
 
-func (b *RedisEventBus) Publish(ctx context.Context, stream string, msg interface{}) (string, error) {
+func (b *RedisEventBus) Publish(ctx context.Context, stream string, msg any) (string, error) {
 	data, err := json.Marshal(msg)
 	if err != nil {
 		return "", fmt.Errorf("marshal message: %w", err)
@@ -44,7 +44,7 @@ func (b *RedisEventBus) Publish(ctx context.Context, stream string, msg interfac
 
 	id, err := b.client.XAdd(ctx, &redis.XAddArgs{
 		Stream: stream,
-		Values: map[string]interface{}{"payload": string(data)},
+		Values: map[string]any{"payload": string(data)},
 	}).Result()
 	if err != nil {
 		return "", fmt.Errorf("xadd: %w", err)
