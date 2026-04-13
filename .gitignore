@@ -195,24 +195,62 @@ cython_debug/
 .pypirc
 
 # Cursor
-#  Cursor is an AI-powered code editor. `.cursorignore` specifies files/directories to
-#  exclude from AI features like autocomplete and code analysis. Recommended for sensitive data
-#  refer to https://docs.cursor.com/context/ignore-files
-.cursorignore
-.cursorindexingignore
+#  Cursor is an AI-powered code editor.
+#  .cursorignore/.cursorindexingignore handled below in CAOF section
 
 # Marimo
 marimo/_static/
 marimo/_lsp/
 __marimo__/
-specs/
+
 CLAUDE.md
+specs/
+# AI assistant configs (keep specs/ and CLAUDE.md tracked)
 .claude/
 .claudeignore
 .aimodelrc
 .gemini/
 .air
 .antigravity/
-bin/
-bin
+.cursorignore
+.cursorindexingignore
+
+# ===== CAOF Project-Specific =====
+
+# Go build output
+/bin/
 caof
+
+# Git worktrees (managed by CAOF at runtime)
+.worktrees/
+
+# Research output (generated at runtime)
+research_output/
+*.xlsx
+*.csv
+
+# Redis dump
+dump.rdb
+
+# C++ build artifacts
+drivers/cpp/build/
+drivers/cpp/*.o
+drivers/cpp/*.dylib
+drivers/cpp/*.a
+
+# MkDocs build output
+/site/
+
+# Runtime workspace
+caof-workspace/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
