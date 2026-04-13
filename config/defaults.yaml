@@ -1,0 +1,33 @@
+redis:
+  address: "localhost:6379"
+  password: ""
+  db: 0
+
+workspace:
+  path: "~/caof-workspace"
+  worktree_dir: ".worktrees"
+
+heartbeat:
+  interval_seconds: 30
+  stale_threshold_seconds: 90
+
+reflection:
+  max_revisions: 3
+
+inference:
+  provider: "openai"
+  model: "gpt-4o"
+  endpoint: ""
+  timeout_seconds: 120
+
+registry:
+  port: 9400
+
+streams:
+  tasks_pending: "tasks.pending"
+  tasks_claimed: "tasks.claimed"
+  artifacts_review: "artifacts.review"
+  artifacts_approved: "artifacts.approved"
+  artifacts_rejected: "artifacts.rejected"
+  agents_heartbeat: "agents.heartbeat"
+  consensus_votes: "consensus.votes"

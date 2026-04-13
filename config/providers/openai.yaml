@@ -1,0 +1,4 @@
+provider: "openai"
+model: "gpt-4o"
+endpoint: "https://api.openai.com"
+api_key_env: "OPENAI_API_KEY"

@@ -1,0 +1,24 @@
+[project]
+name = "caof-agents"
+version = "0.1.0"
+description = "CAOF agent runtime"
+requires-python = ">=3.11"
+dependencies = [
+    "redis>=5.0",
+    "pydantic>=2.0",
+    "httpx>=0.27",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+reasoning = ["tiktoken>=0.7"]
+doers = ["ruff>=0.4"]
+reflectors = ["ruff>=0.4"]
+dev = ["pytest>=8.0", "pytest-asyncio>=0.23"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+target-version = "py311"
