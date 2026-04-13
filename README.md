@@ -1,3 +1,4 @@
+![Gemini_Generated_Image_yrnf1ayrnf1ayrnf](https://github.com/user-attachments/assets/eebdc1fb-efd6-4164-80b9-90d162e5ef20)
 # CAOF -- Collective Agentic Orchestration Framework
 
 > A multi-agent framework where agents are persistent service nodes, not linear chain steps.
