@@ -31,14 +31,12 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: MkDocs Deploy
-        # You may pin to the exact commit or the version.
-        # uses: yodamad-actions/mkdocs@88ae2beb044ebd322bac172ba93df84df0568a96
         uses: yodamad-actions/mkdocs@1.0.1
         with:
           # Directory containing the static site output (relative to repo root)
           output-dir: # default is public
           # Working directory for mkdocs
-          workdir: # default is .
+          workdir: ./mkdocs.yml
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
 
