@@ -77,6 +77,17 @@ func (r *Registry) List() []*AgentInfo {
 	return result
 }
 
+// ListAll returns all registered agents regardless of heartbeat freshness.
+func (r *Registry) ListAll() []*AgentInfo {
+	r.mu.RLock()
+	defer r.mu.RUnlock()
+	result := make([]*AgentInfo, 0, len(r.agents))
+	for _, agent := range r.agents {
+		result = append(result, agent)
+	}
+	return result
+}
+
 func (r *Registry) ListByRole(role string) []*AgentInfo {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
