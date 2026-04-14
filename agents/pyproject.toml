@@ -16,6 +16,14 @@ doers = ["ruff>=0.4"]
 reflectors = ["ruff>=0.4"]
 dev = ["pytest>=8.0", "pytest-asyncio>=0.23"]
 
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["doers*", "shared*", "reasoning*", "reflectors*"]
+exclude = ["tests*"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
