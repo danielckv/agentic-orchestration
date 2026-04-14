@@ -13,7 +13,7 @@
 #
 set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 INSTALL_DIR="${CAOF_INSTALL_DIR:-/opt/caof}"
 SKIP_SERVICE=false
 

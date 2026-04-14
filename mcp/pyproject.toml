@@ -13,5 +13,8 @@ dependencies = [
 [project.optional-dependencies]
 dev = ["pytest>=8.0"]
 
+[tool.setuptools]
+py-modules = ["server", "task_manager", "web_research", "inference"]
+
 [project.scripts]
 caof-mcp = "server:main"
