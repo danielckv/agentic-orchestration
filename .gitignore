@@ -219,7 +219,7 @@ specs/
 
 # Go build output
 /bin/
-caof
+/caof
 
 # Git worktrees (managed by CAOF at runtime)
 .worktrees/
