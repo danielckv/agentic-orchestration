@@ -46,6 +46,20 @@ echo "Platform: ${OS}/${ARCH}"
 echo "Install dir: ${INSTALL_DIR}"
 echo ""
 
+# ── Ensure Redis is available ────────────────────────────────
+
+if ! command -v redis-server &>/dev/null; then
+    echo "Redis not found — installing from source..."
+    VENDOR_DIR="$INSTALL_DIR/vendor/redis" source "$SCRIPT_DIR/install-redis.sh"
+    # Symlink vendor redis-server so it's on PATH
+    sudo ln -sf "$REDIS_BIN" /usr/local/bin/redis-server
+    sudo ln -sf "${REDIS_BIN%server}cli" /usr/local/bin/redis-cli
+    echo "  Linked: /usr/local/bin/redis-server -> $REDIS_BIN"
+else
+    echo "Redis found: $(redis-server --version 2>&1 | head -1)"
+fi
+echo ""
+
 # ── Install binary ───────────────────────────────────────────
 
 echo "Installing caof binary..."

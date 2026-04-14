@@ -26,10 +26,26 @@ echo ""
 
 check "Go"     go      "1.22"
 check "Python"  python3 "3.11"
-check "Redis"   redis-server "7.0"
 check "Git"     git     "2.40"
 check "tmux"    tmux    "3.3"
 check "Make"    make    "any"
+
+# Redis: auto-install if missing
+if command -v redis-server &>/dev/null; then
+    version=$(redis-server --version 2>&1 | head -1)
+    echo -e "${GREEN}✓${NC} Redis found: $version (need 7.0+)"
+    ((PASS++))
+else
+    echo -e "${RED}✗${NC} Redis not found — attempting auto-install..."
+    SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+    if source "$SCRIPT_DIR/install-redis.sh"; then
+        echo -e "${GREEN}✓${NC} Redis installed: $REDIS_BIN"
+        ((PASS++))
+    else
+        echo -e "${RED}✗${NC} Redis auto-install failed (need 7.0+)"
+        ((FAIL++))
+    fi
+fi
 
 echo ""
 echo "=== Results: $PASS passed, $FAIL failed ==="

@@ -232,6 +232,9 @@ research_output/
 # Redis dump
 dump.rdb
 
+# Vendored Redis build (auto-installed by scripts/install-redis.sh)
+vendor/redis/
+
 # C++ build artifacts
 drivers/cpp/build/
 drivers/cpp/*.o
