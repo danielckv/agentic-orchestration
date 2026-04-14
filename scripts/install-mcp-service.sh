@@ -24,6 +24,27 @@ setup_venv() {
     echo "Done."
 }
 
+create_redis_conf() {
+    local conf_file="$1"
+    local data_dir="$2"
+    if [[ -f "$conf_file" ]]; then
+        echo "Redis config already exists: $conf_file"
+        return
+    fi
+    mkdir -p "$(dirname "$conf_file")" "$data_dir"
+    cat > "$conf_file" <<EOF
+# CAOF Redis configuration
+bind 127.0.0.1 ::1
+port 6379
+dir $data_dir
+appendonly yes
+appendfilename "caof.aof"
+maxmemory 256mb
+maxmemory-policy allkeys-lru
+EOF
+    echo "Created Redis config: $conf_file"
+}
+
 create_env_file() {
     local env_file="$1"
     if [[ -f "$env_file" ]]; then
@@ -50,15 +71,18 @@ install_system() {
     setup_venv /opt/caof/mcp
 
     sudo cp "$PROJECT_DIR/systemd/caof-mcp.service" /etc/systemd/system/
+    sudo cp "$PROJECT_DIR/systemd/caof-redis.service" /etc/systemd/system/
     sudo mkdir -p /etc/caof
     create_env_file /etc/caof/mcp.env
+    sudo mkdir -p /var/lib/caof/redis
+    create_redis_conf /etc/caof/redis.conf /var/lib/caof/redis
 
     sudo systemctl daemon-reload
     echo ""
     echo "Installed. Next steps:"
     echo "  1. Edit /etc/caof/mcp.env with your API keys"
-    echo "  2. sudo systemctl enable --now caof-mcp"
-    echo "  3. sudo journalctl -u caof-mcp -f"
+    echo "  2. sudo systemctl enable --now caof-redis caof-mcp"
+    echo "  3. sudo journalctl -u caof-redis -u caof-mcp -f"
 }
 
 # ── Per-user install ─────────────────────────────────────────
@@ -74,12 +98,36 @@ install_user() {
     cp -r "$PROJECT_DIR/config" "$dest/"
     setup_venv "$dest"
 
-    mkdir -p "$HOME/.config/systemd/user"
-    # Write a concrete user unit (not a template)
+    local redis_data="$HOME/.local/share/caof/redis"
+    mkdir -p "$HOME/.config/systemd/user" "$redis_data"
+
+    create_redis_conf "$HOME/.config/caof/redis.conf" "$redis_data"
+
+    # Write redis user unit
+    cat > "$HOME/.config/systemd/user/caof-redis.service" <<UNIT
+[Unit]
+Description=CAOF Redis — event bus and short-term memory
+After=network.target
+
+[Service]
+Type=notify
+ExecStart=/usr/bin/redis-server $HOME/.config/caof/redis.conf
+ExecStop=/usr/bin/redis-cli shutdown
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=default.target
+UNIT
+
+    # Write a concrete MCP user unit (not a template)
     cat > "$HOME/.config/systemd/user/caof-mcp.service" <<UNIT
 [Unit]
 Description=CAOF MCP Server
-After=network.target
+After=network.target caof-redis.service
+Wants=caof-redis.service
 
 [Service]
 Type=simple
@@ -101,8 +149,8 @@ UNIT
     echo ""
     echo "Installed. Next steps:"
     echo "  1. Edit ~/.config/caof/mcp.env with your API keys"
-    echo "  2. systemctl --user enable --now caof-mcp"
-    echo "  3. journalctl --user -u caof-mcp -f"
+    echo "  2. systemctl --user enable --now caof-redis caof-mcp"
+    echo "  3. journalctl --user -u caof-redis -u caof-mcp -f"
     echo ""
     echo "Task output goes to: ~/caof-tasks/"
 }

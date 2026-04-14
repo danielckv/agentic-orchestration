@@ -1,6 +1,7 @@
 [Unit]
 Description=CAOF MCP Server for user %i
-After=network.target
+After=network.target caof-redis.service
+Wants=caof-redis.service
 
 [Service]
 Type=simple
