@@ -1,0 +1,27 @@
+[Unit]
+Description=CAOF MCP Server — task execution via Model Context Protocol
+After=network.target redis.service
+Wants=redis.service
+
+[Service]
+Type=simple
+User=%i
+WorkingDirectory=/opt/caof/mcp
+ExecStart=/opt/caof/mcp/.venv/bin/python -m server
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+# Environment — override in /etc/caof/mcp.env or drop-in
+EnvironmentFile=-/etc/caof/mcp.env
+
+# Hardening
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=read-write
+ReadWritePaths=/home %t
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

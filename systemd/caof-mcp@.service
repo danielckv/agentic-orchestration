@@ -1,0 +1,26 @@
+[Unit]
+Description=CAOF MCP Server for user %i
+After=network.target
+
+[Service]
+Type=simple
+User=%i
+WorkingDirectory=%h/caof-mcp
+ExecStart=%h/caof-mcp/.venv/bin/python -m server
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+# Per-user env file
+EnvironmentFile=-%h/.config/caof/mcp.env
+
+# Hardening
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=read-write
+ReadWritePaths=%h/caof-tasks %h/caof-mcp
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
